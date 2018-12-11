@@ -40,6 +40,41 @@ export default memo(Comp, areEqual)
 
 ## React.lazy()
 
+`React.lazy()` is simply a way to render a dynamically imported component as a regular component. This means the component being imported will only be truly imported when the component is actually rendered. If it is not rendered then the component will never be added tot he js file and there for keeps the file smaller.
+
+Although `Suspense` was not added in 16.6 it is good to mention that `lazy()` works very well in tandom with a `<Suspense>` component. Allowing for a fallback state if the lazy imported component takes some time to import.
+
+```javascript
+// import React and descructure lazy as well
+import React, { lazy } from 'react'
+
+// =============== BEFORE ============== //
+// normal import of component
+import Component from './Component'
+// normal use of component in parent.
+const NewComp = () => {
+    return (
+        <React.Fragment>
+            <Component />
+        </React.Fragment>
+    )
+}
+
+// =============== AFTER ============== //
+// lazy import
+const Component = lazy(() => import('./Component'))
+// normal use of component in parent.
+const NewComp = () => {
+    return (
+        <React.Fragment>
+            <Component />
+        </React.Fragment>
+    )
+}
+
+
+```
+
 ## static contextType()
 
 ## Static getDerivedStateFromError()
