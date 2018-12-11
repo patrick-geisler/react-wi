@@ -33,6 +33,7 @@ const areEqual = (prevProps, nextProps) => {
     /* return a boolean result if they pass or not */
 }
 
+// wrap our Stateless Component in memo
 export default memo(Comp, areEqual)
 
 ```
