@@ -2,6 +2,8 @@
 
 A talk by [@patrick-geisler] and [@caryyon] given at the [MKE-Reactjs-Meetup](https://www.meetup.com/ReactJS-Wisconsin/).
 
+---
+
 ## Main Topics
 
 * `React.memo()`
@@ -10,6 +12,7 @@ A talk by [@patrick-geisler] and [@caryyon] given at the [MKE-Reactjs-Meetup](ht
 * `static getDerivedStateFromError()`
 * A few Deprecations
 
+---
 
 ## React.memo()
 
@@ -37,6 +40,8 @@ const areEqual = (prevProps, nextProps) => {
 export default memo(Comp, areEqual)
 
 ```
+
+---
 
 ## React.lazy()
 
@@ -75,8 +80,14 @@ const NewComp = () => {
 
 ```
 
+---
+
 ## static contextType()
 
+---
+
 ## Static getDerivedStateFromError()
+
+---
 
 ## Deprecations
