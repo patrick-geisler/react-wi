@@ -1,0 +1,23 @@
+{
+  "name": "react-wi",
+  "version": "1.0.0",
+  "description": "A talk by [@patrick-geisler] and [@caryyon] given at the [MKE-Reactjs-Meetup](https://www.meetup.com/ReactJS-Wisconsin/).",
+  "main": "index.js",
+  "scripts": {
+    "start": "mdx-deck deck.mdx"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/patrick-geisler/react-wi.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/patrick-geisler/react-wi/issues"
+  },
+  "homepage": "https://github.com/patrick-geisler/react-wi#readme",
+  "devDependencies": {
+    "mdx-deck": "^1.8.2"
+  }
+}
