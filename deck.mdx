@@ -1,3 +1,5 @@
+export { default as theme } from './theme'
+
 # Whats New in 16.6? 
 
 A talk by [@patrick-geisler]() and [@caryyon]() given at the [MKE-Reactjs-Meetup](https://www.meetup.com/ReactJS-Wisconsin/).
@@ -16,30 +18,95 @@ A talk by [@patrick-geisler]() and [@caryyon]() given at the [MKE-Reactjs-Meetup
 
 ## React.memo()
 
-`React.memo()` is a HOC(Higher Order Component) that can be wrapped around any functional(stateless) component to create 'memorized' components. What this means in practice is, the wrapped component will only rerender when it's props change. This is much like the class(stateful) lifecycle method `shouldComponentUpdate()`
+`React.memo()` is a HOC  that can be wrapped around any functional component to create 'memoized' components. 
 
-This allows a component that renders the same given the same props to be stored in memory. This allows the component to skip being rerendered and will give very nice performance boosts. It will simply reuse the last rendered result of the component.
+```notes
+The wrapped component will only rerender when it's props change. 
 
-This props compare that memo performs is a shallow one, and `memo()` can be passed a second param that can do deeper evaluations.
+Similar to  class(stateful) lifecycle method `shouldComponentUpdate()`
+
+A component that renders the same given the same props to be stored in memory. 
+
+This allows the component to skip being rerendered will simply reuse the last rendered result of the component.
+
+```
+---
+
+## React.memo() Example
+```javascript
+
+class App extends Component {
+  // Set State
+  // Handle Click count++
+  render() {
+    return (
+      <div className="App">
+        <div>
+          {this.state.count}
+        </div>
+        <button onClick={this.handleClick}>
+        This is a button
+        </ button>
+        <AnotherComponent text={'Title'}/>
+      </div>
+    );
+  }
+}
+
+```
+
+---
+
+## React.memo() Example
+```javascript
+
+import React, { memo } from 'react'
+
+const AnotherComponent = ({ text }) => {
+  console.log('AnotherComponent is rendering')
+  return(
+    <div>
+      { text }
+    </ div>
+  )
+}
+
+export default memo(AnotherComponent)
+
+```
+---
+
+# React.memo() Example
+
+---
+
+## Custom Comparisons
 
 ```javascript 
-// import React and descructure memo as well
 import React, { memo } from 'react'
 
 // Stateless Funcitonal Component
-const Comp = props => {
-    /* render using props */
-}
+const AnotherComponent = props => {}
 
-// Deeper Props Evaluation Function
-const areEqual = (prevProps, nextProps) => {
-    /* return a boolean result if they pass or not */
-}
+const areEqual = (prevProps, nextProps) => {}
+  /*
+  return true if passing nextProps to render would return
+  the same result as passing prevProps to render,
+  otherwise return false
+  */
 
-// wrap our Stateless Component in memo
-export default memo(Comp, areEqual)
+export default memo(AnotherComponent, areEqual)
 
 ```
+
+
+---
+
+## Custom Comparisons
+
+This method only exists as a `performance optimization`. Do not rely on it to “prevent” a render.
+
+
 
 ---
 
