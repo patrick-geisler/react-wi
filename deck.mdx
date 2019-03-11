@@ -204,3 +204,201 @@ class UseContext extends Component {
 ---
 
 ## Deprecations
+
+---
+
+## Why Hooks?
+
+---
+
+## Why Hooks?
+
+- Very large components
+- Complicated component tree
+- Classes can be confusing
+- No smaller way to introduce state than class components
+
+```notes
+ - Large components are hard to refactor
+ - Splitting up components can create tons of wrapping and complexity in the component tree
+ - Binding, this, and consyructors can be confusing
+```
+
+---
+
+## Use State Hook
+
+---
+
+## use Effect Hook
+- Perform side effects in function components
+
+- useEffect() runs both on initial render and on subsequent updates
+
+```notes
+- Think of it as componentDidMount, componentDidUpdate, and componentWillUnmount combined
+- Can be altered for performance
+- Effect can return a function to clean up and unsubscribe
+```
+
+---
+
+### use Effect Hook
+
+``` js
+useEffect(() => {
+    window.newrelic.setCustomAttribute(
+      'clientID', window.__STATE__.meta.clientID
+    )
+``` 
+
+```notes
+Running additional code after React updates DOM
+Logging/Analytics
+```
+---
+
+## use Effect Hook
+
+Cleaning up an Effect Hook
+
+---
+
+## use Effect Hook
+
+Old way:
+
+```js
+componentDidMount(){
+  Client.subscribeToClientStatus(clientID, handleStatusChange)
+}
+
+componentWillUnmount(){
+  Client.unsubscribeFromClientStatus(clientID, handleStatusChange);
+}
+
+```
+
+```notes
+- Avoid writing mirrored code in seperate lifecycle methods
+```
+
+---
+
+## use Effect Hook
+
+With Hooks:
+``` js
+useEffect(() => {
+    Client.subscribeToClientStatus(clientID, handleStatusChange);
+    // Specify how to clean up after this effect:
+    return function cleanup() {
+      Client.unsubscribeFromClientStatus(clientID, handleStatusChange);
+    };
+  });
+``` 
+```notes
+- React performs the cleanup() when the component unmounts. However effects run for every render and not just once. 
+- Don’t have to  return named function
+- React also cleans up effects from the previous render before running the effects next time.
+```
+---
+## Custom Hooks
+
+```notes
+Extract component logic into reusable functions
+```
+
+---
+## Custom Hooks
+CARY: DO THAT ZOOMY THING ON COMPONET AND HOOK
+      PLEASE DOUBLE CHECK THIS PLEASE
+      ITS PROBABLY WRONG AND MY EGO CANT TAKE IT
+      
+HOOK
+``` js
+import React, { useState, useEffect } from 'react';
+
+function useClientStatus((clinetID) => {
+  const [isOnline, setIsOnline] = useState(null);
+
+  function handleStatusChange(status) {
+    setIsOnline(status.isOnline);
+  }
+
+  useEffect(() => {
+    Client.subscribeToClientStatus(clinetID, handleStatusChange);
+    return () => {
+      Client.unsubscribeFromClientStatus(clinetID, handleStatusChange);
+    };
+  });
+
+  return isOnline;
+  });
+``` 
+
+COMPONENT
+``` js
+const clientStatus = ({ clientName }) => {
+	const [clientStatus, changeClientStatus] = useClientStatus(clientID)
+
+  const clientStatusColor = () => {
+    if(clientStatus === 'Online'){
+      return 'Green'
+    } else {
+      return 'Red'
+    }
+  }
+		return(
+		<React.Fragment>
+			<StatusIcon fill={clientStatusColor(clientStatus)}>
+			{ClientName}
+		</React.Fragment>
+		)
+	
+}
+``` 
+
+---
+
+# Custom Hooks
+
+Do I have to name my custom Hooks starting with “use”?
+
+---
+
+
+# Custom Hooks
+
+Yes
+(but not really)
+
+
+```notes
+This convention is very important. 
+Without it, we wouldn’t be able to automatically 
+check for violations of rules of Hooks because we couldn’t 
+tell if a certain function contains calls to Hooks inside of it.
+
+```
+---
+
+# References 
+- [Introducing Hooks – React](https://reactjs.org/docs/hooks-intro.html)
+- [Using the State Hook – React](https://reactjs.org/docs/hooks-state.html)
+- [Using the Effect Hook – React](https://reactjs.org/docs/hooks-effect.html#tip-use-multiple-effects-to-separate-concerns)
+- [How Node.js is Going to Replace JavaScript – Medium](https://medium.com/cool-code-pal/how-node-js-is-going-to-replace-javascript-cf72b588b1b)
+
+---
+
+# Slides
+- [Slides](https://github.com/patrick-geisler/react-wi)
+- [Demo] (https://github.com/patrick-geisler/reactjs-wi-demo)
+
+---
+
+# Questions?
+
+---
+
+# Thank You!
