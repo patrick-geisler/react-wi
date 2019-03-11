@@ -339,8 +339,8 @@ function useClientStatus((clinetID) => {
 
 COMPONENT
 ``` js
-const clientStatus = ({ clientName }) => {
-	const [clientStatus, changeClientStatus] = useClientStatus(clientID)
+const ClientStatus = ({ clientName }) => {
+	const clientStatus = useClientStatus(clientID)
 
   const clientStatusColor = () => {
     if(clientStatus === 'Online'){
@@ -351,7 +351,7 @@ const clientStatus = ({ clientName }) => {
   }
 		return(
 		<React.Fragment>
-			<StatusIcon fill={clientStatusColor(clientStatus)}>
+			<StatusIcon fill={clientStatusColor(clientStatus)} />
 			{ClientName}
 		</React.Fragment>
 		)
@@ -415,6 +415,7 @@ NOTES:
 - Other Hooks
 - testing Custom hooks
 - debugging hooks
+- CHECK CLIENT SPELLING
 
 
 ## Recap:
