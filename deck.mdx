@@ -1,6 +1,9 @@
 export { default as theme } from './theme'
+import { CodeSurfer } from "mdx-deck-code-surfer"
 
-# Whats New in 16.6??
+
+
+# Whats New in 16.6-16.8??
 
 A talk by [@patrick-geisler]() and [@caryyon]() given at the [MKE-Reactjs-Meetup](https://www.meetup.com/ReactJS-Wisconsin/).
 
@@ -8,11 +11,11 @@ A talk by [@patrick-geisler]() and [@caryyon]() given at the [MKE-Reactjs-Meetup
 
 ## Main Topics
 
-* `React.memo()`
-* `React.lazy()`
-* `static contextType()`
-* `static getDerivedStateFromError()`
-* A few Deprecations
+* React.memo()
+* React.lazy()
+* static contextType()
+* static getDerivedStateFromError()
+* Hooks
 
 ---
 
@@ -36,19 +39,14 @@ This allows the component to skip being rerendered will simply reuse the last re
 ```javascript
 
 class App extends Component {
-  // Set State
-  // Handle Click count++
+  state = {count: 0}
   render() {
     return (
-      <div className="App">
-        <div>
-          {this.state.count}
-        </div>
-        <button onClick={this.handleClick}>
-            Counter++
-        </ button>
-        <AnotherComponent text={'Title'}/>
-      </div>
+      <React.Fragment>
+        {this.state.count}
+        <button onClick={()=>this.setState(count++)} />
+        <AnotherComponent />
+      </React.Fragment>
     );
   }
 }
@@ -90,9 +88,7 @@ const AnotherComponent = props => {}
 
 const areEqual = (prevProps, nextProps) => {}
   /*
-  return true if passing nextProps to render would return
-  the same result as passing prevProps to render,
-  otherwise return false
+  return false to rerender
   */
 
 export default memo(AnotherComponent, areEqual)
@@ -118,7 +114,8 @@ This method only exists as a `performance optimization`. Do not rely on it to pr
 
 ## React.Suspense
 
-`React.Suspense` let you specify the loading indicator in case some components in the tree below it are not yet ready to render.
+Lets you specify a fallback UI in case some components in the tree below it are not yet ready to render.
+
 
 ---
 ## React.Suspense
@@ -136,26 +133,7 @@ import React, { lazy, Suspense } from 'react'
 Destructure lazy and Suspense from react
 ```
 ---
-
-## React.lazy() Before
-```javascript
-
-import Component from './Component'
-
-const NewComp = () => {
-    return (
-        <React.Fragment>
-            <Component />
-        </React.Fragment>
-    )
-}
-```
-```notes
-Normal import of component
-Normal use of component in parent.
-```
----
-## React.lazy() After
+## React.lazy()
 
 ```javascript
 const Component = lazy(() => import('./Component'))
@@ -170,6 +148,8 @@ const NewComp = () => {
 
 
 ```
+---
+## React.lazy() Example
 
 ---
 
@@ -201,13 +181,29 @@ class UseContext extends Component {
 
 ## Static getDerivedStateFromError()
 
+Lifecycle method to render a fallback UI before the render completes
+
+```notes
+
+componentDidCatch() - fired after the error
+logging, showing different UI by calling setState()
+
+
+Before that is fired, null is rendered in place of the tree that threw the error
+
+Can break parent components that don’t expect their refs to be empty
+
+```
+
 ---
 
-## Deprecations
+## React 16.7
 
+Performance bugfix for React.lazy
 ---
+## React 16.8
 
-## Why Hooks?
+Why Hooks?
 
 ---
 
@@ -221,16 +217,45 @@ class UseContext extends Component {
 ```notes
  - Large components are hard to refactor
  - Splitting up components can create tons of wrapping and complexity in the component tree
- - Binding, this, and consyructors can be confusing
+ - Binding, this, and constructors can be confusing
 ```
 
 ---
 
-## Use State Hook
+
+## Why Hooks
+
+ Hooks allow functional components to have local state
 
 ---
 
-## use Effect Hook
+## UseState Hook
+
+ ```js
+ const [state, setState] = useState({});
+ ```
+
+---
+
+## UseState Hook
+
+```js
+ const [isOnline, setIsOnline] = useState(true);
+ const [clientName, setClientName] = useState(null);
+ ```
+---
+
+## UseState Hook
+
+```js
+ const [isOnline, setIsOnline] = useState(true);
+ const [clientName, setClientName] = useState(null);
+
+ setClientName('John Doe')
+ ```
+---
+
+## useEffect Hook
 - Perform side effects in function components
 
 - useEffect() runs both on initial render and on subsequent updates
@@ -243,38 +268,46 @@ class UseContext extends Component {
 
 ---
 
-### use Effect Hook
+### useEffect Hook
 
 ``` js
 useEffect(() => {
-    window.newrelic.setCustomAttribute(
+    logClient(
       'clientID', window.__STATE__.meta.clientID
     )
+}
 ``` 
 
 ```notes
 Running additional code after React updates DOM
 Logging/Analytics
 ```
+
 ---
 
-## use Effect Hook
+## useEffect Hook
 
 Cleaning up an Effect Hook
 
 ---
 
-## use Effect Hook
+## useEffect Hook
 
 Old way:
 
 ```js
 componentDidMount(){
-  Client.subscribeToClientStatus(clientID, handleStatusChange)
+  Client.subscribeToClientStatus(
+    clientID, 
+    status => setIsOnline(status)
+  )
 }
 
 componentWillUnmount(){
-  Client.unsubscribeFromClientStatus(clientID, handleStatusChange);
+  Client.unsubscribeFromClientStatus(
+    clientID,
+    status => setIsOnline(status)
+  )
 }
 
 ```
@@ -285,15 +318,21 @@ componentWillUnmount(){
 
 ---
 
-## use Effect Hook
+## useEffect Hook
 
 With Hooks:
 ``` js
 useEffect(() => {
-    Client.subscribeToClientStatus(clientID, handleStatusChange);
+    Client.subscribeToClientStatus(
+      clientID, 
+      status => setIsOnline(status)
+    )
     // Specify how to clean up after this effect:
     return function cleanup() {
-      Client.unsubscribeFromClientStatus(clientID, handleStatusChange);
+      Client.unsubscribeFromClientStatus(
+        clientID, 
+        status => setIsOnline(status)
+        );
     };
   });
 ``` 
@@ -303,6 +342,19 @@ useEffect(() => {
 - React also cleans up effects from the previous render before running the effects next time.
 ```
 ---
+
+## Other Hooks:
+- useContext
+- useReducer
+- useCallback
+- useMemo
+- useRef
+- useImperativeHandle
+- useLayoutEffect
+- useDebugValue
+
+---
+
 ## Custom Hooks
 
 ```notes
@@ -310,55 +362,25 @@ Extract component logic into reusable functions
 ```
 
 ---
-## Custom Hooks
-CARY: DO THAT ZOOMY THING ON COMPONET AND HOOK
-      PLEASE DOUBLE CHECK THIS PLEASE
-      ITS PROBABLY WRONG AND MY EGO CANT TAKE IT
-      
-HOOK
-``` js
-import React, { useState, useEffect } from 'react';
 
-function useClientStatus((clinetID) => {
-  const [isOnline, setIsOnline] = useState(null);
-
-  function handleStatusChange(status) {
-    setIsOnline(status.isOnline);
-  }
-
-  useEffect(() => {
-    Client.subscribeToClientStatus(clinetID, handleStatusChange);
-    return () => {
-      Client.unsubscribeFromClientStatus(clinetID, handleStatusChange);
-    };
-  });
-
-  return isOnline;
-  });
-``` 
-
-COMPONENT
-``` js
-const ClientStatus = ({ clientName }) => {
-	const clientStatus = useClientStatus(clientID)
-
-  const clientStatusColor = () => {
-    if(clientStatus === 'Online'){
-      return 'Green'
-    } else {
-      return 'Red'
-    }
-  }
-		return(
-		<React.Fragment>
-			<StatusIcon fill={clientStatusColor(clientStatus)} />
-			{ClientName}
-		</React.Fragment>
-		)
-	
-}
-``` 
-
+<CodeSurfer
+  title="Custom Hooks"
+  code={require("!raw-loader!./CustomHooks.js")}
+  lang="javascript"
+  showNumbers={false}
+  dark={false}
+  steps={[
+    { range: [21, 35]},
+    { range: [29, 34]},
+    { range: [25, 27]},
+    { lines: [23] },
+    { range: [1, 18]},
+    { lines: [4]},
+    { range: [6, 15]},
+    { lines: [17]},
+    { range: [21, 35]},
+  ]}
+/>
 ---
 
 # Custom Hooks
@@ -382,18 +404,27 @@ tell if a certain function contains calls to Hooks inside of it.
 
 ```
 ---
+<!-- 
+# Testing Custom Hooks
 
-# References 
-- [Introducing Hooks – React](https://reactjs.org/docs/hooks-intro.html)
-- [Using the State Hook – React](https://reactjs.org/docs/hooks-state.html)
-- [Using the Effect Hook – React](https://reactjs.org/docs/hooks-effect.html#tip-use-multiple-effects-to-separate-concerns)
-- [How Node.js is Going to Replace JavaScript – Medium](https://medium.com/cool-code-pal/how-node-js-is-going-to-replace-javascript-cf72b588b1b)
+- Stay away from implementation details
+- Don't call custom hooks manually
+
+```notes
+"Hooks can only be called inside the body of a function component."
+```
+
+--- -->
+
+# Gotcha
+
+- Do not call hooks in a conditional
+- Hooks must be used at the top level of a component
 
 ---
 
-# Slides
-- [Slides](https://github.com/patrick-geisler/react-wi)
-- [Demo] (https://github.com/patrick-geisler/reactjs-wi-demo)
+## Future
+- Are classes dead?
 
 ---
 
@@ -403,31 +434,10 @@ tell if a certain function contains calls to Hooks inside of it.
 
 # Thank You!
 
+---
 
+# Slides
+- [Slides](https://github.com/patrick-geisler/react-wi)
+- [Demo] (https://github.com/patrick-geisler/reactjs-wi-demo)
 
---- 
-
-NOTES:
-
-
-## TODO:
-- Testing hooks
-- Other Hooks
-- testing Custom hooks
-- debugging hooks
-- CHECK CLIENT SPELLING
-
-
-## Recap:
-- Can use hooks multiple times to perform different side effects
-- Can sue the same hook multiple times ( just a var in code )
--
-## Gotcha
-- performance
-- testing
-- debugging
-- Cant use hooks in conditional
-
-## Future
-- are classes dead (probably not)
-- performance
+---
